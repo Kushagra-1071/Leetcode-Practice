@@ -4,22 +4,18 @@
 public class Solution extends VersionControl {
     public int firstBadVersion(int n) {
         int start=0,end=n,mid=-1;
-        while(start<=end)
+        while(start<end)
         {
             mid=start+(end-start)/2;
-            if(isBadVersion(mid)==true && isBadVersion(mid-1)==false)
-            {
-                return mid;
-            }
-            else if(isBadVersion(mid)==false)
+            if(!isBadVersion(mid))
             {
                 start=mid+1;
             }
-            else 
+            else
             {
                 end=mid;
             }
         }
-    return -1;
+    return start;
     }
 }
