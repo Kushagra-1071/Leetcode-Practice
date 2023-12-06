@@ -1,16 +1,23 @@
-class Solution {
+public class Solution {
     public boolean search(int[] nums, int target) {
-        Arrays.sort(nums);
-        int st=0;
-        int end=nums.length-1;
-        while(st<=end){
-            int mid=(st+end)/2;
-            if(nums[mid]==target)
-            return true;
-            else if(target<nums[mid])
-            end=mid-1;
-            else
-            st=mid+1;
+        int low = 0, high = nums.length - 1;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (nums[mid] == target) return true;
+
+            if (nums[low] == nums[mid]) {
+                low++;
+                continue;
+            }
+
+            if (nums[low] <= nums[mid]) {
+                if (nums[low] <= target && target <= nums[mid]) high = mid - 1;
+                else low = mid + 1;
+            } else {
+                if (nums[mid] <= target && target <= nums[high]) low = mid + 1;
+                else high = mid - 1;
+            }
         }
         return false;
     }
