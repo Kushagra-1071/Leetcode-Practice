@@ -1,40 +1,40 @@
 class Solution {
     public boolean canTransform(String start, String end) {
-    Queue<Node> logs=new LinkedList<>();
-    int count=0;
-    for(char c:start.toCharArray())
-    {
-        if(c=='X') count++;
-        else
-        {
-            logs.add(new Node(c,count));
-        }
-    }
-    count=0;
-    for(char c:end.toCharArray())
-    {
-        if(c=='X') count++;
-        else
-        {
-            if(logs.isEmpty()) return false;
-            Node node=logs.poll();
-            if(c!=node.c) return false;
-            if(c=='L' && count>node.count) return false;
-            if(c=='R'&& count<node.count)  return false;
+
+        int i = 0 ;
+        int j = 0;
+
+        char[] s = start.toCharArray();
+        char[] e = end.toCharArray();
+
+        while(i < s.length || j < e.length){
+
+            while(i < s.length && s[i] == 'X'){
+                i++;
+            }
+             while(j < e.length && e[j] == 'X'){
+                j++;
+            }
+
+             if (i >= s.length || j >= e.length) { break; }
+
+            if(s[i] != e[j]){
+                return false;
+            }
+
+            if(s[i] == 'R' && i > j){
+                return false;
+            }
+
+            if(s[i] == 'L' && i < j){
+                return false;
+            }
+
+            i++;
+            j++;
 
         }
 
-    }
-    return logs.isEmpty();    
-    }
-    class Node
-    {
-        public Character c;
-        public int count;
-        public Node(Character c,int count)
-        {
-            this.c=c;
-            this.count=count;
-        }
+        return i == j;
     }
 }
