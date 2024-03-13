@@ -1,30 +1,24 @@
 class Solution {
     public String getPermutation(int n, int k) {
-        boolean[] map=new boolean[n];
-        ll=new ArrayList<>();
-        rec(n,k,"",map);
-        return ll.get(ll.size()-1);
-    }
-    static List<String> ll;
-    public static void rec(int n,int k,String ans,boolean[] map)
-    {
-        if(ans.length()==n)
-        {
-            ll.add(ans);
-            return;
-        }
-        if(ll.size()==k)
-        {
-            return;
-        }
-        for(int i=1;i<=n;i++)
-        {
-            if(map[i-1]==false)
-            {
-                map[i-1]=true;
-                rec(n,k,ans+i,map);
-                map[i-1]=false;
+        StringBuilder ans = new StringBuilder();
+        boolean[] vis = new boolean[n + 1];
+        for (int i = 0; i < n; ++i) {
+            int fact = 1;
+            for (int j = 1; j < n - i; ++j) {
+                fact *= j;
+            }
+            for (int j = 1; j <= n; ++j) {
+                if (!vis[j]) {
+                    if (k > fact) {
+                        k -= fact;
+                    } else {
+                        ans.append(j);
+                        vis[j] = true;
+                        break;
+                    }
+                }
             }
         }
+        return ans.toString();
     }
 }
