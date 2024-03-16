@@ -13,70 +13,39 @@
  *     }
  * }
  */
-
-class Pair{
-    TreeNode node;
-    int row, col;
-
-    Pair(TreeNode node, int row, int col){
-        this.node = node;
-        this.row = row;
-        this.col = col;
-    }
-}
-
 class Solution {
+    private Queue<int[]> nodeEntries;
     public List<List<Integer>> verticalTraversal(TreeNode root) {
-
-        Queue<Pair> q = new LinkedList<>();
-        TreeMap<Integer, TreeMap<Integer, PriorityQueue<Integer>>> map = new TreeMap<>();
-        q.offer(new Pair(root, 0, 0));
-
-        while(!q.isEmpty()){
-
-            for(int i = q.size() ; i > 0 ; i--){
-
-               Pair p = q.poll();
-               TreeNode currNode = p.node;
-               int x = p.row;
-               int y = p.col;
-
-               if(!map.containsKey(x))
-                    map.put(x, new TreeMap<>());
-
-                if(!map.get(x).containsKey(y))
-                    map.get(x).put(y, new PriorityQueue<>());
-
-                map.get(x).get(y).offer(currNode.val);
-
-               if(currNode.left != null){
-                   q.offer(new Pair(currNode.left, x - 1, y + 1));
-               }
-
-               if(currNode.right != null){
-                   q.offer(new Pair(currNode.right, x + 1, y + 1));
-               }
-            }
-        }
-
-        System.out.print(map);
-
-        List<List<Integer>> ans = new ArrayList<>();
-
-        for(TreeMap<Integer, PriorityQueue<Integer>> key : map.values()){
-            List<Integer> currList = new ArrayList<>();
-
-            for(PriorityQueue<Integer> nodes : key.values()){
-                while(!nodes.isEmpty()){
-                    currList.add(nodes.poll());
+        nodeEntries = new PriorityQueue<>((e1,e2) -> {
+           //0 - col , 1 - row, 2- val
+            for (int i =0; i< e1.length; ++i) {
+                if (e1[i] != e2[i]) {
+                    return e1[i]-e2[i];
+                    
                 }
             }
-            System.out.print(currList);
-            ans.add(new ArrayList<>(currList));
-
+            return 0;
+        });
+        
+        dfs(root, 0, 0);
+        List<List<Integer>> output = new ArrayList<>();
+        int currentCol = Integer.MIN_VALUE;
+        while (!nodeEntries.isEmpty()) {
+            int[] entry =  nodeEntries.remove();
+            if (entry[0] != currentCol) {
+                currentCol = entry[0];
+                output.add(new ArrayList<>());
+            }
+            output.get(output.size()-1).add(entry[2]);
         }
+        return output;
+    }
     
-        return ans;
+    private void dfs(TreeNode root, int col, int row) {
+        if (root == null) return;
+        nodeEntries.add(new int[] {col, row, root.val});
+        dfs(root.left, col-1, row+1);
+        dfs(root.right, col+1, row+1);
         
     }
 }
