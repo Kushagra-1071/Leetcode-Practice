@@ -1,44 +1,38 @@
+
 class Solution {
-    int path=0;
+    int res = 0, empty = 1, sx, sy, ex, ey;
     public int uniquePathsIII(int[][] grid) {
-        int zero=0;
-        int x=-1;
-        int y=-1;
-        for(int i=0;i<grid.length;i++)
-        {
-            for(int j=0;j<grid[i].length;j++)
-            {
-                if(grid[i][j]==0)
-                {
-                    zero++;
-                }
-                if(grid[i][j]==1)
-                {
-                    x=i;
-                    y=j;
+        // indexes of the dot that needs to be used to represent the path
+        // hit the target and pass all empty cell
+        int m = grid.length, n = grid[0].length;
+        for(int i = 0; i < m; ++i) {
+            for(int j = 0; j < n; ++j) {
+                if(grid[i][j] == 0) empty++;
+                else if(grid[i][j] == 1) {
+                    sx = i;
+                    sy = j;
                 }
             }
         }
-        find(x,y,grid,zero+1);
-        return path;
+        dfs(grid, sx, sy);
+        return res;
     }
-    public void find(int i,int j,int[][] arr,int zero)
-    {
-        if(i<0||j<0 || i>=arr.length || j>=arr[i].length || arr[i][j]==-1)
-        {
+    
+    public void dfs(int[][] grid, int x, int y) {
+        if(x < 0 || x >= grid.length || y < 0 || y >= grid[0].length || grid[x][y] < 0) {
             return;
         }
-        if(arr[i][j]==2 && zero==0)
-        {
-            path++;
+        if(grid[x][y] == 2) {
+            if(empty == 0) res++;
             return;
         }
-        int val=arr[i][j];
-        arr[i][j]=-1;
-        find(i+1,j,arr,zero-1);
-        find(i-1,j,arr,zero-1);
-        find(i,j+1,arr,zero-1);
-        find(i,j-1,arr,zero-1);
-        arr[i][j]=val;
+        grid[x][y] = -2;
+        empty--;
+        dfs(grid, x + 1, y);
+        dfs(grid, x - 1, y);
+        dfs(grid, x, y + 1);
+        dfs(grid, x, y - 1);
+        grid[x][y] = 0;
+        empty++;
     }
 }
