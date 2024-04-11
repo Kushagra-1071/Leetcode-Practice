@@ -1,17 +1,10 @@
 class Solution {
     public int getXORSum(int[] arr1, int[] arr2) {
-        return cal(arr1,arr2);
+        int xor1 = 0, xor2 = 0;
+
+        for (int i : arr1) xor1 ^= i;
+        for (int j : arr2) xor2 ^= j;
+
+        return xor1 & xor2;
     }
-    int cal(int[] a,int[] b)
-    {
-        int out=0,c=0;
-        for(int i:a)
-        c^=i;
-        for(int i:b)
-        {
-            out^=(i&c);
-        }
-        return out;
-    }
-    
 }
