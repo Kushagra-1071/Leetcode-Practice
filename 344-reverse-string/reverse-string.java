@@ -1,18 +1,12 @@
 class Solution {
     public void reverseString(char[] s) {
-        reverse(s,0,s.length-1);
-    }
-    public char[] reverse(char[]s,int start,int end)
-    {
-        if(start>end)
-        {
-            return s;
+        int st=0, end=s.length-1;
+        while(st<=end){
+            char temp=s[end];
+            s[end]=s[st];
+            s[st]=temp;
+            end--;
+            st++;
         }
-        char temp=s[start];
-        s[start]=s[end];
-        s[end]=temp;
-
-        reverse(s,start+1,end-1);
-        return s;
     }
 }
