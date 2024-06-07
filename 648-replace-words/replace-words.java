@@ -1,25 +1,53 @@
 class Solution {
-    public String replaceWords(List<String> dictionary, String sentence) {
-        Set<String> s=new HashSet<>(dictionary);
-        StringBuilder res=new StringBuilder();
-        List<String> temp=new ArrayList<>(Arrays.asList(sentence.split(" ")));
+    static class Node {
+        boolean isWord;
+        Node[] children = new Node[26];
+    }
 
-        for(String t: temp)
-        {
-            int i=0;
-            while(i<=t.length())
-            {
-                String curr=t.substring(0,i++);
-                if(s.contains(curr))
-                {
-                    res.append(curr).append(" ");
-                    break;
-                }
-                if(i==t.length()+1) res.append(t).append(" ");
-            }
+    Node root = new Node();
+    public String replaceWords(List<String> dictionary, String sentence) {
+        for (String str: dictionary) {
+            insert(str);
         }
-        res.deleteCharAt(res.length()-1);
-        return res.toString();
         
+        String[] arr = sentence.split(" ");
+        StringBuilder builder = new StringBuilder("");
+        for (int i=0; i<arr.length; i++) {
+            String replace = search(arr[i]);
+            if (replace == "") {
+                builder.append(arr[i]);
+            } else {
+                builder.append(replace);
+            }
+            builder.append(" ");
+        }
+        return builder.toString().trim();
+    }
+
+    public void insert(String str) {
+        Node node = this.root;
+        for (char c: str.toCharArray()) {
+            int n = c-'a';
+            if (node.children[n] == null) {
+                node.children[n] = new Node();
+            }
+            node = node.children[n];
+        }
+        node.isWord = true;
+    }
+
+
+    public String search(String str) {
+        Node node = this.root;
+        for (int i=0; i<str.length(); i++) {
+            char c = str.charAt(i);
+            int n = c-'a';
+            if (node.children[n] == null) {
+                return "";
+            }
+            node = node.children[n];
+            if (node.isWord) return str.substring(0, i+1);
+        }
+        return "";
     }
 }
