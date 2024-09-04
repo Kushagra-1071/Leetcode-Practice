@@ -1,39 +1,55 @@
 class Solution {
+
+    private static final int HASH_MULTIPLIER = 60001; // Slightly larger than 2 * max coordinate value
+
     public int robotSim(int[] commands, int[][] obstacles) {
-        int x=0,y=0,d=0;
-        int[][] direction={{0,1},{1,0},{0,-1},{-1,0}};
-        int maxDistance=0;
-        Set<String> obstacleSet=new HashSet<>();
-        for(int[] obstacle:obstacles)
-        {
-            obstacleSet.add(obstacle[0]+","+obstacle[1]);
+        // Store obstacles in an HashSet for efficient lookup
+        Set<Integer> obstacleSet = new HashSet<>();
+        for (int[] obstacle : obstacles) {
+            obstacleSet.add(hashCoordinates(obstacle[0], obstacle[1]));
         }
-        for(int cmd:commands)
-        {
-            if(cmd==-1)
-            {
-                d=(d+1)%4;
+
+        // Define direction vectors: North, East, South, West
+        int[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+
+        int[] currentPosition = { 0, 0 };
+        int maxDistanceSquared = 0;
+        int currentDirection = 0; // 0: North, 1: East, 2: South, 3: West
+
+        for (int command : commands) {
+            if (command == -1) {
+                // Turn right
+                currentDirection = (currentDirection + 1) % 4;
+                continue;
             }
-            else if(cmd==-2)
-            {
-                d=(d+3)%4;
+            if (command == -2) {
+                // Turn left
+                currentDirection = (currentDirection + 3) % 4;
+                continue;
             }
-            else
-            {
-                for(int i=0;i<cmd;i++)
-                {
-                    int nx=x+direction[d][0];
-                    int ny=y+direction[d][1];
-                    if(obstacleSet.contains(nx+","+ny))
-                    {
-                        break;
-                    }
-                    x=nx;
-                    y=ny;
-                    maxDistance=Math.max(maxDistance,x*x+y*y);
+
+            // Move forward
+            int[] direction = directions[currentDirection];
+            for (int step = 0; step < command; step++) {
+                int nextX = currentPosition[0] + direction[0];
+                int nextY = currentPosition[1] + direction[1];
+                if (obstacleSet.contains(hashCoordinates(nextX, nextY))) {
+                    break;
                 }
+                currentPosition[0] = nextX;
+                currentPosition[1] = nextY;
+                maxDistanceSquared = Math.max(
+                    maxDistanceSquared,
+                    nextX * nextX + nextY * nextY
+                );
             }
         }
-        return maxDistance;
+
+        return maxDistanceSquared;
+    }
+
+    // Hash function to convert (x, y) coordinates to a unique integer value
+    private int hashCoordinates(int x, int y) {
+        return x + HASH_MULTIPLIER * y;
     }
 }
